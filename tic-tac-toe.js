@@ -17,6 +17,14 @@ window.onload = function () {
             grid[parseInt(div.id)] = nextPlay
             nextPlay = nextPlay === "X" ? "O" : "X";      
         })
+
+        div.addEventListener('mouseover', () => {
+            div.classList.add("hover")
+        })
+
+        div.addEventListener('mouseout', () => {
+            div.classList.remove("hover")
+        })
     })
     
     
