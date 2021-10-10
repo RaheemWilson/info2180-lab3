@@ -5,6 +5,7 @@ window.onload = function () {
     let status = document.getElementById("status")
     let board = document.getElementById("board");
     let boardDivs = [...board.children];
+    let gameWon = false
     
 
     var nextPlay = ["X", "O"][Math.round(Math.random())];
@@ -16,7 +17,7 @@ window.onload = function () {
 
         //Add letter to square when user clicks it
         div.addEventListener('click', () => {
-            if(div.innerHTML === ""){
+            if(div.innerHTML === "" && !gameWon){
                 div.classList.add(nextPlay)
                 div.innerHTML = nextPlay;
                 grid[parseInt(div.id)] = nextPlay
@@ -37,22 +38,36 @@ window.onload = function () {
     
     //Function to check who wins
     const checkGrid = () => {
-        let gridstr = grid.join("")
-        if(gridstr.slice(0, 3).includes("XXX") || gridstr.slice(3, 6).includes("XXX") || gridstr.slice(6, 9).includes("XXX")){
+        
+        if(checkPossibility("XXX")){
             status.classList.add("you-won")
             status.innerHTML = "Congratulations! X is the Winner!"
-        } else if(gridstr.slice(0, 3).includes("OOO") || gridstr.slice(3, 6).includes("OOO") || gridstr.slice(6, 9).includes("OOO")){
+            gameWon = true
+        } else if(checkPossibility("OOO")){
             status.classList.add("you-won")
             status.innerHTML = "Congratulations! O is the Winner!"
+            gameWon = true
         }
     }
 
-    //Reset button listener
+    //Check winning possibilities
+    const checkPossibility = (str) => {
+        let gridstr = grid.join("")
+        let row = gridstr.slice(0, 3).includes(str) || gridstr.slice(3, 6).includes(str) || gridstr.slice(6, 9).includes(str)
+        let column = (grid[0] + grid[3] + grid[6]).includes(str) || (grid[1] + grid[4] + grid[7]).includes(str) || (grid[2] + grid[5] + grid[8]).includes(str) 
+        let diagonal = (grid[0] + grid[4] + grid[8]).includes(str) || (grid[2] + grid[4] + grid[6]).includes(str) 
+
+        return row || column || diagonal
+
+    }
+
+    //Reset button listen
     let btn = document.getElementsByClassName("btn")[0]
     btn.addEventListener('click', () => {
         grid = new Array(9).fill(" ");
         status.classList.remove("you-won")
         status.innerHTML = "Move your mouse over a square and click to play an X or an O."
+        gameWon = false
         boardDivs.forEach(div => {
             if(div.classList.contains("X")){
                 div.classList.remove("X")
